@@ -2,6 +2,8 @@
 const profileOverview = document.querySelector(".overview");
 const userName = "rycalingo";
 
+const repoList = document.querySelector(".repo-list");
+
 async function getProfile() {
 	const response = await fetch(`https://api.github.com/users/${userName}`);
 	if (!response.ok) throw new Error(response.statusText);
@@ -27,3 +29,23 @@ function displayProfile(user) {
 }
 
 getProfile();
+
+async function getRepos() {
+	const param = "?sort=updated&per_page=100";
+	const response = await fetch(`https://api.github.com/users/${userName}/repos${param}`);
+	if (!response.ok) throw new Error(response.statusText);
+	const repos = await response.json();
+	displayRepos(repos);
+}
+
+function displayRepos(repos) {
+	const repoArray = [];
+	for (let repoItem of repos) {
+		const li = `<li class="repo"><h3>${repoItem.name}</h3></li>`;
+		repoArray.push(li);
+	}
+
+	repoList.innerHTML = repoArray.join("");
+}
+
+getRepos();
